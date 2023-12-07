@@ -1,5 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');  // 抽离css插件
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin'); // 压缩css插件
+
 module.exports = {
   entry: './src/index.js',
 
@@ -19,7 +22,10 @@ module.exports = {
       template: './index.html',
       filename: 'app.html',
       inject: 'body'
-    })
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'styles/[contenthash].css'
+    }),
   ],
 
   devServer: {
@@ -51,7 +57,17 @@ module.exports = {
             maxSize: 4 * 1024 * 1024
           }
         }
-      }
+      },
+      { // 加载css插件
+        test: /\.(css|less)$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
+      },
     ]
-  }
+  },
+
+  optimization:{ // 优化配置
+    minimizer:[
+      new CssMinimizerPlugin(),
+    ],
+}
 };
