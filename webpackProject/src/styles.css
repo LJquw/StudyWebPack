@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'iconFront';
+  src: url('./assets/字魂龙吟手书.ttf') format('truetype');
+}
+
+.icon{
+ font-family: 'iconFront';
+ font-size: 30px; 
+}
+
 .hello{
   background-color: aqua;
 }

@@ -3,6 +3,13 @@ import imgSrc from './assets/1.png';
 import imgLogo from './assets/logo.svg';
 import testTxt  from './assets/example.txt';
 import jpgMap from './assets/3.jpg';
+import Data from './assets/data.xml';
+import Notes from './assets/data.csv';
+import toml from './assets/data.toml';
+import yaml from './assets/data.yaml';
+import json5 from './assets/data.json5';
+import _ from 'lodash';
+import './async-module.js';
 import "./styles.css";
 import './styles.less';
 
@@ -29,3 +36,24 @@ img3.src = jpgMap;
 document.body.appendChild(img3);
 
 document.body.classList.add('hello');
+
+const span = document.createElement('span');
+span.classList.add('icon');
+span.innerHTML = '&#xe668;'
+document.body.appendChild(span);
+
+console.log(Data);
+console.log(Notes);
+console.log(toml.title);
+console.log(yaml.owner.age);
+console.log(json5.name);
+console.log(_.join(['liu', 'jun', 'misses'], '+'));
+
+const button = document.createElement('button');
+button.textContent = '点击执行加法运算';
+button.addEventListener('click', () =>{
+  import(/* webpackChunkName:'math', webpackPrefetch:true */'./math.js').then(({add}) => {
+    console.log(add(4, 6));
+  })
+});
+document.body.appendChild(button);

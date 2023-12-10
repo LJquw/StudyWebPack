@@ -1,0 +1,7 @@
+title = "TAML Example"
+
+[owner]
+name = "Tom Tuesday"
+age = 18
+bio = "Github Cofounder & CEO\nLikes tater tots and beer"
+dob = 1899-02-23T07:32:00Z
