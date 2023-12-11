@@ -1,0 +1,19 @@
+{
+  "env": {
+      "browser": true, // 支持运行在浏览器中
+      "es2021": true // 支持es2021
+  },
+  "extends": [
+      "airbnb-base" // 支持的扩展文件
+  ],
+  "parserOptions": {
+      "ecmaVersion": 12, // ecmaVersion 版本
+      "sourceType": "module"
+  },
+  "rules": {
+    // 启用的规则
+  },
+  "globals":{
+      
+  }
+}

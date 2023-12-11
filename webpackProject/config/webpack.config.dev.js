@@ -1,147 +1,32 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');  // 抽离css插件
-const toml = require('toml');
-const yaml = require('yaml');
-const json5= require('json5');
 
 module.exports = {
-  entry:{
-    // 代码分离防止重复 第二种方式
-    // index:{
-    //   import:'./src/index.js',
-    //   dependOn:'shared'
-    // },
-    // another:{
-    //   import:'./src/another-module.js',
-    //   dependOn:'shared'
-    // },
-    // shared:'lodash'
-
-    // 代码分离多入口 第二方式
-    index:'./src/index.js',
-    another:'./src/another-module.js'
-  },
-
   output: {
     filename:'scripts/[name].js', // 将js文件放到一个文件夹中
-    path: path.resolve(__dirname, '../dist'),
-    clean: true,
-    assetModuleFilename: 'images/[contenthash].[ext]', // 打包resource资源 方法1
   },
 
-  devtool: 'inline-source-map',
+  //开启sourcemap 开发中推荐使用'source-map' 生产环境一般不开启sourcemap 
+  devtool:'source-map',
 
   mode: 'development',
 
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './index.html',
-      filename: 'app.html',
-      inject: 'body'
-    }),
-    new MiniCssExtractPlugin({
-      filename: 'styles/[contenthash].css'
-    }),
-  ],
-
   devServer: {
-    static: './dist'
+    // static: './dist'
+    static: path.resolve(__dirname, './dist'),
+    compress: true, // 可选择开启gzips压缩功能
+    port: '3000', // 运行端口号
+    headers:{
+      'X-Access-Token':'123213' // 自定义头部
+    },
+    proxy:{
+      '/api':'http://localhost:9000' // 配置代理
+    },
+    // https:true, // 设置https协议
+    http2:true, 
+    historyApiFallBack: true,
+    host:'0.0.0.0',  //如果在开发环境中启动了一个devserve服务，并期望其他人能访问到，只需要配置该项即可
+    
+    hot:true, // 热替换
+    liveReload:true, // 热加载 新版webpack-dev-server默认已经开启热加载功能
   },
-
-  module: {
-    rules: [
-      {
-        test: /\.png$/,
-        type: 'asset/resource',
-        generator: { // 打包resource资源 方法2
-          filename: 'images/[contenthash].[ext]' // 优先级更高
-        }
-      },
-      {
-        test: /\.svg$/,
-        type: 'asset/inline'
-      },
-      {
-        test: /\.txt$/,
-        type: 'asset/source'
-      },
-      {
-        test: /\.jpg$/,
-        type: 'asset',
-        parser: {
-          dataUrlCondition: {
-            maxSize: 4 * 1024 * 1024
-          }
-        }
-      },
-      { // 加载css插件
-        test: /\.(css|less)$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
-      },
-      { // 加载字体
-        test: /\.(woff|woff2|eot|ttf|otf)$/,
-        type: 'asset/resource',
-      },
-      { // 加载csv数据
-        test: /\.(csv|tsv)$/,
-        use: 'csv-loader',
-      },
-      { // 加载xml数据
-        test: /\.xml$/,
-        use: 'xml-loader',
-      },
-      { // 加载toml文件
-        test: /\.toml$/,
-        type: 'json',
-        parser: {
-          parse: toml.parse
-        }
-      },
-      { // 加载yaml文件
-        test: /\.yaml$/,
-        type: 'json',
-        parser: {
-          parse: yaml.parse
-        }
-      },
-      { // 加载json5文件
-        test: /\.json5$/,
-        type: 'json',
-        parser: {
-          parse: json5.parse
-        }
-      },
-      { // 加载js文件
-        test:/\.js$/,
-        exclude:/node_modules/,
-        use:{
-          loader: 'babel-loader',
-          options:{
-            presets:['@babel/preset-env'],
-            plugins:[
-              [
-                '@babel/plugin-transform-runtime'
-              ]
-            ]
-          }
-        }
-      }
-    ]
-  },
-
-  optimization:{ // 优化配置
-
-    splitChunks:{
-      chunks:'all', // 分离代码第二种方式 要与第一种方式结合
-
-      cacheGroups:{ // 缓存第三方库
-        vendor:{
-          test:/[\\/]node_modules[\\/]/,
-          name:'vendors',
-          chunks:'all'
-        }
-      },
-    }
-}
 };
